@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "734733582584",
+    "project_id": "reactnativevinove",
+    "storage_bucket": "reactnativevinove.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734733582584:android:f5a3bc8846dfdc1c917b0d",
+        "android_client_info": {
+          "package_name": "com.projectpoc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "734733582584-10cder1lvm8psmp0soqh0kj4t1qbd6mr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.projectpoc",
+            "certificate_hash": "c61ac6ae40482e8f201bfa8bf6115107e8372109"
+          }
+        },
+        {
+          "client_id": "734733582584-3rf73q8gdbc9arpq5ap0mdr6tonm97ah.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.projectpoc",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "734733582584-tkr2rnccqcl1th6q9k61hkg8v4bn1fad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqOLLWReTWmlvVjZg2IFO-qaWyjT58ebU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "734733582584-tkr2rnccqcl1th6q9k61hkg8v4bn1fad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
