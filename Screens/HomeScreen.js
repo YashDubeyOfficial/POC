@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, Image,Button,style,TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, Image,Button,style,TouchableOpacity,TextInput} from 'react-native';
 import {FlatList, ScrollView} from 'react-native-gesture-handler';
 import database, {firebase} from '@react-native-firebase/database';
 import { back } from 'react-native/Libraries/Animated/Easing';
@@ -7,19 +7,23 @@ import { back } from 'react-native/Libraries/Animated/Easing';
 export default function App({navigation,props}) {
 
   const [itemArray, setItemArray] = useState([])
-
-  const LogOut = () =>{
+  const [filteredData, setFilteredData] = useState([])
+  const [search, setSearch] = useState('')
   
-  firebase.auth().signOut()
-  console.log('User signed out!');
-  navigation.replace('LoginScreen');
-  
+  //LogOut from ReactNativeFirebase phone Authentication
+  const LogOut = () =>{    
+      firebase.auth().signOut()
+      console.log('User signed out!');
+      navigation.replace('LoginScreen');
   }
+
+  //ReadUser data from rnFirebase realtime DB
   const readUserData = async () => {
    database().ref('/Users/')
    .on('value', snapshot => {
     setItemArray(Object.values(snapshot.val()))
-    console.log(setItemArray)
+    setFilteredData(Object.values(snapshot.val()))
+    // console.log(setItemArray)
   });
   };
 
@@ -36,14 +40,46 @@ export default function App({navigation,props}) {
       }
     )
   }
+
+  const SearchBtn = 
+    // alert(search)
+    filteredData.filter((val) =>{
+      if (search == ''){
+        return(val)
+       }else if (
+         val.name.toLowerCase().includes(search.toLowerCase()) || 
+         val.email.toLowerCase().includes(search.toLowerCase()) || 
+         val.phone.toString().toLowerCase().includes(search.toString().toLowerCase()) 
+       ){
+          return(val) 
+       }
+    })                  
+
+    
+  
+  
   return (
   
       
-    <View style={{marginBottom:120,paddingBottom:5}} >
+    <View style={{marginBottom:180,paddingBottom:5}} >
+    
+    <View style={{flexDirection:'row'}}>
+      
+        <TextInput
+                  style={styles.input}
+                  autoCapitalize='none'
+                  placeholder="Search here"
+                  keyboardType="email-address"
+                  onChangeText={(text)=>{setSearch(text)}}
+                  value={search}
+                  // onBlur={handleBlur('email')}
+        />  
+    </View>
 
         <FlatList
-            data={itemArray}
+            data={SearchBtn}
             renderItem={({item})=>
+
             <View style={styles.Card}>
                 <Image
                     style={styles.CardImg}
@@ -58,7 +94,7 @@ export default function App({navigation,props}) {
                       <Text style={{padding:7}}>Edit user</Text>
                     </TouchableOpacity>
                 </View>
-              </View>
+            </View>
             
             }
             
@@ -98,8 +134,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingLeft: 15,
   },
-  tapLogin:{
+  input: {
+    height: 50,
+    width:370,
+    margin: 10,
+    borderWidth: 1,
+    borderRadius:5,
+    padding:11
 
+  },
+  tapLogin:{
     backgroundColor: '#64beff',
     width:100,
     margin:100,
@@ -123,13 +167,22 @@ const styles = StyleSheet.create({
   Card:{
     color:'black',
     marginTop:10,
-    marginStart:5,
-    marginEnd:5,
+    marginStart:15,
+    marginEnd:15,
     padding:5,
     borderWidth:2,
     borderColor:'#64beff',
     flexDirection:"row",
-    alignItems:'center'
+    alignItems:'center',
+    borderRadius:10,
+    shadowColor:'green',
+    shadowOpacity:1,
+    shadowRadius:20,
+    shadowOffset:{
+      width:100,
+      height:100
+    },
+    // backgroundColor:'#000'
   },
   CardImg:{
     height:100,
