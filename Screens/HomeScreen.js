@@ -1,15 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, Image,Button,style,TouchableOpacity,TextInput} from 'react-native';
+import {View, LogBox,StyleSheet, Text, Image,Button,style,TouchableOpacity,TextInput} from 'react-native';
 import {FlatList, ScrollView} from 'react-native-gesture-handler';
 import database, {firebase} from '@react-native-firebase/database';
 import { back } from 'react-native/Libraries/Animated/Easing';
+import {Picker} from '@react-native-picker/picker';
+import ActionButton from "react-native-action-button";
 
 export default function App({navigation,props}) {
+  useEffect(() => {
+    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+    readUserData()
+    return () => {
+      
+    }
+  }, [])
+  
 
   const [itemArray, setItemArray] = useState([])
   const [filteredData, setFilteredData] = useState([])
   const [search, setSearch] = useState('')
-  
+  const [selectedLanguage, setSelectedLanguage] = useState();
+
   //LogOut from ReactNativeFirebase phone Authentication
   const LogOut = () =>{    
       firebase.auth().signOut()
@@ -41,6 +52,7 @@ export default function App({navigation,props}) {
     )
   }
 
+  //filter data for serach input
   const SearchBtn = 
     // alert(search)
     filteredData.filter((val) =>{
@@ -55,13 +67,32 @@ export default function App({navigation,props}) {
        }
     })                  
 
-    
+    // For A-Z sorting 
+    const A_Z = () => {
+      let newList = [...itemArray];
+      newList.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name.toLowerCase() > a.name.toLowerCase() ? -1 : 0));
+      setFilteredData(newList);
+    };
+
+     // For A-Z sorting 
+     const Z_A = () => {
+      let newList = [...itemArray];
+      newList.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? 1 : b.name.toLowerCase() < a.name.toLowerCase() ? -1 : 0));
+      setFilteredData(newList);
+    };
+
+     // For A-Z sorting 
+     const emailSort = () => {
+      let newList = [...itemArray];
+      newList.sort((a, b) => (a.email.toLowerCase() > b.email.toLowerCase() ? 1 : b.email.toLowerCase() > a.email.toLowerCase() ? -1 : 0));
+      setFilteredData(newList);
+    };
   
   
   return (
   
       
-    <View style={{marginBottom:180,paddingBottom:5}} >
+    <View style={{marginBottom:140,paddingBottom:5}} >
     
     <View style={{flexDirection:'row'}}>
       
@@ -74,8 +105,37 @@ export default function App({navigation,props}) {
                   value={search}
                   // onBlur={handleBlur('email')}
         />  
+        <View style={{marginTop:10,marginRight:50,borderRadius:10,height:50,borderWidth:1,width:110,justifyContent:'center',alignContent:'center'}}>
+          <Picker
+              style={{width:120, marginTop:10, marginBottom: 10,borderRadius:10}}
+              // mode="dropdown"
+              selectedValue={selectedLanguage}
+              onValueChange={(itemValue) =>{ 
+                setSelectedLanguage(itemValue)
+                }            
+              }>         
+          
+              <Picker.Item label="Filter" enabled={false}  value="sortBy" />
+              <Picker.Item label="A-Z" value="A-Z" />
+              <Picker.Item label="Z-A"  value="Z-A" />
+              <Picker.Item label="email" value="email" /> 
+            </Picker>
+        </View>
+ 
     </View>
-
+         {/* <Button
+          title='A-Z'
+          onPress={A_Z}
+        />
+         <Button
+          title='Z-A'
+          onPress={Z_A}
+        />
+        <Button
+          title='email'
+          onPress={emailSort}
+        /> */}
+        {/* <Text>{selectedLanguage}</Text> */}
         <FlatList
             data={SearchBtn}
             renderItem={({item})=>
@@ -99,25 +159,18 @@ export default function App({navigation,props}) {
             }
             
           />
-          <View style={{flexDirection:'row',justifyContent:"space-evenly",marginTop:10}}>
+          
+          <ActionButton buttonColor="#64beff" size={50} spacing={6} bgColor='#F4F5FF' position='right' offsetY={12}>
 
-              <TouchableOpacity style={styles.lgt}
-              onPress={readUserData}>
-                <Text style={{color:'#fff'}}>Fetch Data</Text>
-              </TouchableOpacity>
+            <ActionButton.Item buttonColor='#fff' title="Create" onPress={() => navigation.navigate('CreateUserScreen')}>
+            <Image source={require('../assets/user.png')} style={{height:5,width:4,padding:11}}/>
+            </ActionButton.Item>
 
-              <TouchableOpacity
-              onPress={()=>navigation.navigate('CreateUserScreen')}
-              style={styles.lgt}>
-                <Text style={{color:'#fff'}}>Add User</Text>
-              </TouchableOpacity>
+            <ActionButton.Item buttonColor='#fff' title="LogOut" onPress={LogOut}>
+            <Image source={require('../assets/user.png')} style={{height:5,width:4,padding:10}}/>
+            </ActionButton.Item>
 
-              <TouchableOpacity style={styles.lgt}
-              onPress={LogOut}>
-                <Text style={{color:'#fff'}}>LogOut</Text>
-              </TouchableOpacity>
-            
-          </View>
+          </ActionButton>
     </View>
 
 
@@ -136,7 +189,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    width:370,
+    width:250,
     margin: 10,
     borderWidth: 1,
     borderRadius:5,
